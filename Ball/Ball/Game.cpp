@@ -34,7 +34,7 @@ void Game::Show()
 		for (int j = 0; j < cols; j++)
 		{
 			if (i == Ball_Coordinates.y && j == Ball_Coordinates.x)
-				std::cout << (char)(9824);
+				std::cout << (char)(79);
 			else if (mas[i][j] == 1)
 				std::cout << (char)(176);
 			else if (mas[i][j] == 0)
