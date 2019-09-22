@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>;
-using namespace std;
 
 struct Point
 {
@@ -9,10 +8,13 @@ public:
 	int y;
 };
 
+
 class Game
 {
 private:
-	const int mas[24][20];
+	static const int cols = 20;
+	static const int rows = 24;
+	const unsigned char mas[rows][cols];
 	Point Ball_Coordinates;
 
 public:
@@ -46,57 +48,9 @@ public:
 		Ball_Coordinates.y = 23;
 	}
 
-
-	void Move(char button)
-	{
-
-		switch (button)
-		{
-		case 'w':
-			if (mas[Ball_Coordinates.y - 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y <= 23)
-				Ball_Coordinates.y--;
-			break;
-		case 's':
-			if (mas[Ball_Coordinates.y + 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y >= 0)
-				Ball_Coordinates.y++;
-			break;
-		case 'a':
-			if (mas[Ball_Coordinates.y][Ball_Coordinates.x - 1] != 1 && Ball_Coordinates.x >= 0)
-				Ball_Coordinates.x--;
-			break;
-		case 'd':
-			if (mas[Ball_Coordinates.y][Ball_Coordinates.x + 1] != 1 && Ball_Coordinates.x <= 23)
-				Ball_Coordinates.x++;
-			break;
-
-		}
-	}
-
-
-	void Show()
-	{
-		
-			for (int i = 0; i < 24; i++)
-			{
-				for (int j = 0; j < 20; j++)
-				{
-					if(i == Ball_Coordinates.y && j == Ball_Coordinates.x) 
-						cout << static_cast<char>(9824);
-					else if (mas[i][j] == 1)
-						cout << static_cast<char>(176);
-					else if (mas[i][j] == 0)
-						cout << " ";
-
-					if (Ball_Coordinates.x == 1 && Ball_Coordinates.y == 0)
-					{
-						system("cls");
-						cout << "You win";
-					}
-				}
-				cout << endl;
-			}
+	void Move(char);
+	void Show();
 	
-	}
-		
+	void FinishGame();
 };
 

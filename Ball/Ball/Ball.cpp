@@ -1,10 +1,7 @@
 #include <iostream>;
-using namespace std;
 #include "Game.h";
+#include <conio.h>;
 
-
- //const int column = 20;//столбец
- //const int line = 24;//строчки
 
 
 int main(int argc, const char* argv[])
@@ -14,11 +11,12 @@ int main(int argc, const char* argv[])
 	char c;
 	do
 	{
+		
 		a.Show();
-		cin >> c;
+		
+		a.Move(_getch());
 	
 		system("cls");
-		a.Move(c);
 	} while (true);
 
 	return 0;
