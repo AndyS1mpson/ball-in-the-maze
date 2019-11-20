@@ -1,25 +1,25 @@
 #include"Game.h";
 
-
+static int level=1;
 void Game::Move(char button)
 {
 
 	switch (button)
 	{
 	case 'w':
-		if (mas[Ball_Coordinates.y - 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y <=rows)
+		if (mas[level-1][Ball_Coordinates.y - 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y <=rows)
 			Ball_Coordinates.y--;
 		break;
 	case 's':
-		if (mas[Ball_Coordinates.y + 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y >= 0)
+		if (mas[level-1][Ball_Coordinates.y + 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y >= 0)
 			Ball_Coordinates.y++;
 		break;
 	case 'a':
-		if (mas[Ball_Coordinates.y][Ball_Coordinates.x - 1] != 1 && Ball_Coordinates.x >= 0)
+		if (mas[level-1][Ball_Coordinates.y][Ball_Coordinates.x - 1] != 1 && Ball_Coordinates.x >= 0)
 			Ball_Coordinates.x--;
 		break;
-	case 'd':
-		if (mas[Ball_Coordinates.y][Ball_Coordinates.x + 1] != 1 && Ball_Coordinates.x <cols)
+	case 'd': 
+		if (mas[level-1][Ball_Coordinates.y][Ball_Coordinates.x + 1] != 1 && Ball_Coordinates.x <cols)
 			Ball_Coordinates.x++;
 		break;
 
@@ -35,14 +35,20 @@ void Game::Show()
 		{
 			if (i == Ball_Coordinates.y && j == Ball_Coordinates.x)
 				std::cout << (char)(79);
-			else if (mas[i][j] == 1)
+			else if (mas[level-1][i][j] == 1)
 				std::cout << (char)(176);
-			else if (mas[i][j] == 0)
+			else if (mas[level-1][i][j] == 0)
 				std::cout << " ";
 
 			if (Ball_Coordinates.x == 1 && Ball_Coordinates.y == 0)
 			{
-				FinishGame();
+				if (level != 3)
+				{
+					level++;
+					Ball_Coordinates.x = 1;
+					Ball_Coordinates.y = 25;
+				}
+				else FinishGame();
 			}
 		}
 		std::cout << std::endl;

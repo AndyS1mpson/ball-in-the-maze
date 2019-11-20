@@ -2,8 +2,6 @@
 #include "Game.h";
 #include <conio.h>;
 
-
-
 int main(int argc, const char* argv[])
 {
 	Game a;
