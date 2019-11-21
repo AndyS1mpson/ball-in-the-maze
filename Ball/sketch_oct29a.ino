@@ -32,7 +32,7 @@ public:
   short x;
   short y;
 };
-
+static int level=1;
 class Game
 {
 private:
@@ -101,7 +101,10 @@ void Game::Show()
        {       
         tft.fillRect(tft.width()-(j+1)*10,tft.height()-((i+1)*10),10,10,WHITE);
        }
-//FinishGame();
+    if (Ball_Coordinates.x == 1 && Ball_Coordinates.y == 0)
+      {
+        FinishGame();
+      }
       //}
     }
     //std::cout << std::endl;
@@ -131,6 +134,13 @@ void Game::Move(char button)
 
   }
 }
+void Game::FinishGame()
+{
+  tft.fillRect(0, BOXSIZE, tft.width(), tft.height()-BOXSIZE, BLACK);
+  tft.setCursor(120,200);
+  tft.println("uıʍ noʎ");
+  
+}
 
 #define MINPRESSURE 10
 #define MAXPRESSURE 1000
@@ -138,6 +148,9 @@ void Game::Move(char button)
 void setup() {
   // put your setup code here, to run once:
  // put your setup code here, to run once:
+  tft.reset();
+  uint16_t identifier = tft.readID();
+  tft.begin(identifier);
   tft.fillScreen(BLACK);//Заполняет экран черным цветом
 
 
@@ -160,23 +173,22 @@ void loop() {
   pinMode(XM, OUTPUT);
   pinMode(YP, OUTPUT);
     
-    if(p.y<BOXSIZE )
-    {
-  char button;
-  if (p.z > MINPRESSURE && p.z < MAXPRESSURE) {
-    if (p.y < (TS_MINY-5)) {
-      
-      // press the bottom of the screen to erase 
-      tft.fillRect(0, BOXSIZE, tft.width(), tft.height()-BOXSIZE, BLACK);
-    }
     // scale from 0->1023 to tft.width
     p.x = tft.width()-(map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
-   p.y = tft.height()-(map(p.y, TS_MINY, TS_MAXY, tft.height(), 0)); 
+    p.y = tft.height()-(map(p.y, TS_MINY, TS_MAXY, tft.height(), 0)); 
     p.x= p.x+p.y;
     p.y=p.y-p.x;
     p.y=-p.y;
     p.x=p.x-p.y;
     p.x=tft.width()-p.x+BOXSIZE;
+    if(p.y<BOXSIZE )
+    {
+    char button;
+  if (p.z > MINPRESSURE && p.z < MAXPRESSURE) {
+    if (p.y < (TS_MINY-5)) {
+      
+      // press the bottom of the screen to erase 
+     
 
    
       if(p.x<BOXSIZE)
@@ -188,8 +200,9 @@ void loop() {
       if(p.x>BOXSIZE*3 && p.x<BOXSIZE*4)
       button='a';
     }
+  }
      ball.Move(button);
     }
-   
+    
     }
 
