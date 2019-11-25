@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="MazeGeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
