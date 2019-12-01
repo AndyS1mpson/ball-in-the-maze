@@ -1,6 +1,7 @@
 #include <stack>
 #include <vector>
 #include <time.h>
+#include <iostream>
 /*
 	Cell represents a cell on a grid which has
 	- position (x,y)
@@ -11,19 +12,18 @@
 		0b0100 = BOTTOM
 		0b1000 = LEFT)
 */
-// change them for proper output
-#define WALL '1'		
-#define ROAD ' '
 
+#define WALL (char)219
+#define ROAD ' '
 #define TOP 0b0001
 #define RIGHT 0b0010
 #define BOTTOM 0b0100
 #define LEFT 0b1000
 #define EMPTY 0b0000
 
-int DX[4] = { -1, 0, 1, 0 };
-int DY[4] = { 0, 1, 0, -1 };
-int NEIGHTBOURS[4] = { TOP, RIGHT, BOTTOM, LEFT };
+int DX[4] = {-1, 0, 1, 0};
+int DY[4] = {0, 1, 0, -1};
+int NEIGHTBOURS[4] = {TOP, RIGHT, BOTTOM, LEFT};
 
 struct Cell
 {
@@ -65,21 +65,21 @@ struct Cell
 		N => 	cell is visited
 	3. Pop cell from the stack, go back to 2
 */
-char** GenerateMaze(int startX, int startY)
+char **GenerateMaze(int startX, int startY, int rows, int cols)
 {
 	// create grid of cells
-	Cell** grid = new Cell * [12]; // rows
+	Cell **grid = new Cell *[rows]; // rows
 
-	for (int i = 0; i < 12; ++i)
+	for (int i = 0; i < rows; ++i)
 	{
-		grid[i] = new Cell[11];
-		for (int j = 0; j < 11; j++)
+		grid[i] = new Cell[cols];
+		for (int j = 0; j < cols; j++)
 			grid[i][j] = Cell(i, j);
 	}
 
 	srand(time(NULL));
 
-	std::stack<Cell>* callStack = new std::stack<Cell>();
+	std::stack<Cell> *callStack = new std::stack<Cell>();
 
 	grid[startX][startY].visited = true;
 
@@ -94,7 +94,7 @@ char** GenerateMaze(int startX, int startY)
 		int x = startX + DX[i];
 		int y = startY + DY[i];
 
-		if (x > -1 && x < 12 && y > -1 && y < 11)
+		if (x > -1 && x < rows && y > -1 && y < cols)
 			if (!grid[x][y].visited)
 				neightbours += NEIGHTBOURS[i];
 	}
@@ -124,7 +124,7 @@ char** GenerateMaze(int startX, int startY)
 			int x = current.x + DX[i];
 			int y = current.y + DY[i];
 
-			if (x > -1 && x < 12 && y > -1 && y < 11)
+			if (x > -1 && x < rows && y > -1 && y < cols)
 				if (!grid[x][y].visited)
 					neightbours += NEIGHTBOURS[i];
 		}
@@ -140,7 +140,6 @@ char** GenerateMaze(int startX, int startY)
 		{
 			randomNeightbour = rand() % 4;
 		} while ((neightbours & NEIGHTBOURS[randomNeightbour]) == 0);
-		
 
 		grid[current.x][current.y].neightbours += NEIGHTBOURS[randomNeightbour];
 		_x = current.x + DX[randomNeightbour];
@@ -151,18 +150,21 @@ char** GenerateMaze(int startX, int startY)
 
 	} while (!callStack->empty());
 
+	int _rows = rows * 2 + 1;
+	int _cols = cols * 2 + 1;
+
 	// now we have links between cells & we need to convert them to our normal grid, that we gonna return
-	char** resultGrid = new char* [25];
-	for (int i = 0; i < 25; ++i)
+	char **resultGrid = new char *[_rows];
+	for (int i = 0; i < _rows; ++i)
 	{
-		resultGrid[i] = new char[23];
-		for (int j = 0; j < 23; ++j)
+		resultGrid[i] = new char[_cols];
+		for (int j = 0; j < _cols; ++j)
 			resultGrid[i][j] = WALL;
 	}
 
-	for (int gridI = 0, resultGridI = 1; gridI < 12; gridI++, resultGridI += 2)
+	for (int gridI = 0, resultGridI = 1; gridI < rows; gridI++, resultGridI += 2)
 	{
-		for (int gridJ = 0, resultGridJ = 1; gridJ < 11; gridJ++, resultGridJ += 2)
+		for (int gridJ = 0, resultGridJ = 1; gridJ < cols; gridJ++, resultGridJ += 2)
 		{
 			for (int k = 0; k < 4; ++k)
 			{
@@ -177,10 +179,31 @@ char** GenerateMaze(int startX, int startY)
 	}
 
 	// free memory
-	for (int i = 0; i < 12; ++i)
+	for (int i = 0; i < rows; ++i)
 		delete[] grid[i];
 	delete[] grid;
 	delete callStack;
 
 	return resultGrid;
 }
+
+//int main()
+//{
+//	// input value range for startX: [0,11]
+//	// input value range for startY: [0,10]
+//
+//	char** grid;
+//
+//	int x, y;
+//
+//	std::cin >> x >> y;
+//
+//	grid = GenerateMaze(0, 0, x, y);
+//
+//	for (int i = 0; i < 2 * x + 1; ++i)
+//	{
+//		for (int j = 0; j < 2 * y + 1; ++j)
+//			std::cout << grid[i][j];
+//		std::cout << std::endl;
+//	}
+//}
