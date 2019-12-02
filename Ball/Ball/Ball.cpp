@@ -15,8 +15,11 @@ int main(int argc, const char* argv[])
 	char c;
 	do
 	{		
-		a.Show();		
+		a.Show();
+		
 		a.Move(_getch());
+
+	
 	
 		system("cls");
 	} while (true);

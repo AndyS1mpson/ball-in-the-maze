@@ -22,6 +22,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);    //Объект,отвеч�
 #define CYAN    0x07FF
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
+#define MAGENTA 0xF81F
 
 SWTFT tft;    //Объект,отвечающий за работу с экраном
 
@@ -328,8 +329,7 @@ Game::Game()
 void Game::Show()
 {
   //Serial.println("Show");
- if(level != 4)
-  {    
+ 
   for (int i =0; i <rows; i++)
   {
       for (int j = 0; j <cols; j++)
@@ -337,10 +337,11 @@ void Game::Show()
       if (i == Ball_Coordinates.y && j == Ball_Coordinates.x)
       {
         //Serial.println("ball");
-        tft.fillRect((tft.width()-(17*(Ball_Coordinates.x+1))),(tft.height()-((17*(Ball_Coordinates.y+1)))),17,17,BLACK);        
+         tft.fillRect((tft.width()-(17*(Ball_Coordinates.x+1))),(tft.height()-((17*(Ball_Coordinates.y+1)))),17,17,BLACK);          
+         //tft.fillCircle((tft.width()-(17*(Ball_Coordinates.x+0.5))),(tft.height()-((17*(Ball_Coordinates.y+0.5)))),5,BLACK);          
       }
       else if(i==Finish.y && j==Finish.x)
-          tft.fillRect(tft.width()-(j+1)*17,tft.height()-((i+1)*17),17,17,BLACK);
+          tft.fillRect(tft.width()-(j+1)*17,tft.height()-((i+1)*17),17,17,MAGENTA);
       else if (mas[i][j] == 1)
       {
        tft.fillRect(tft.width()-(j+1)*17,tft.height()-((i+1)*17),17,17,GREEN);
@@ -368,7 +369,6 @@ void Game::Show()
             delete[] grid1;
        }
     }
-  }
   }
   //else if(level==3)
 }
@@ -403,21 +403,43 @@ void Game::Move(char button)
 #define MINPRESSURE 10
 #define MAXPRESSURE 1000
 
+
+
 void setup() {
   // put your setup code here, to run once:
  // put your setup code here, to run once:
+ 
   tft.reset();
   uint16_t identifier = tft.readID();
   tft.begin(identifier);
-  tft.fillScreen(BLACK);//Заполняет экран черным цветом
 
+   
+  tft.fillScreen(BLACK);//Заполняет экран черным цветом
 
   tft.fillRect(0, 0, BOXSIZE, BOXSIZE, RED);
   tft.fillRect(BOXSIZE, 0, BOXSIZE, BOXSIZE, YELLOW);
   tft.fillRect(BOXSIZE*2, 0, BOXSIZE, BOXSIZE, GREEN);
   tft.fillRect(BOXSIZE*3, 0, BOXSIZE, BOXSIZE, CYAN);
+
+  //для кнопки "a"
+  //tft.setCursor(190,20);
+   tft.fillRect(190,20,190,20,BLACK);
+   tft.fillCircle(230,30,15,BLACK); 
+    //для кнопки "w"
+    //tft.setCursor(135,10);
+    tft.fillRect(139,10,23,45,BLACK);
+    tft.fillCircle(150,45,15,BLACK);
+    //для кнопки "s"
+    tft.fillRect(80,20,23,35,BLACK);
+    tft.fillCircle(90,20,15,BLACK);
+    //для кнопки "d"
+    tft.fillRect(20,20,35,20,BLACK);
+    tft.fillCircle(20,30,15,BLACK);
+  
+  
   pinMode(13, OUTPUT);
 }
+
  Game ball;
 void loop() {
   // put your main code here, to run repeatedly:

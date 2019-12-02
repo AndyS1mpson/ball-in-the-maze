@@ -200,14 +200,13 @@ Game::Game()
 	Finish.x = 11;
 	Finish.y = 13;
 };
-
 void Game::Move(char button)
 {
 
 	switch (button)
 	{
 	case 'w':
-		if (mas[Ball_Coordinates.y - 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y <=rows)
+		if (mas[Ball_Coordinates.y - 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y <= rows)
 			Ball_Coordinates.y--;
 		break;
 	case 's':
@@ -218,8 +217,8 @@ void Game::Move(char button)
 		if (mas[Ball_Coordinates.y][Ball_Coordinates.x - 1] != 1 && Ball_Coordinates.x >= 0)
 			Ball_Coordinates.x--;
 		break;
-	case 'd': 
-		if (mas[Ball_Coordinates.y][Ball_Coordinates.x + 1] != 1 && Ball_Coordinates.x <cols)
+	case 'd':
+		if (mas[Ball_Coordinates.y][Ball_Coordinates.x + 1] != 1 && Ball_Coordinates.x < cols)
 			Ball_Coordinates.x++;
 		break;
 
