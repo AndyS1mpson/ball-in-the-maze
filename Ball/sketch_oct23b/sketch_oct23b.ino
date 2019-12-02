@@ -38,6 +38,7 @@ public:
 #ifndef STACK_H
 #define STACK_H
 
+//Структура данных Stack
 template <typename T>
 class Stack
 {
@@ -170,6 +171,7 @@ struct Cell
     N =>  cell is visited
   3. Pop cell from the stack, go back to 2
 */
+//Функция,отвечающая за генерацию лабиринта
 char** GenerateMaze(int startX, int startY, int rows, int cols)
 {
   // create grid of cells
@@ -291,6 +293,7 @@ char** GenerateMaze(int startX, int startY, int rows, int cols)
 }
 
 static int level=1;
+//Класс игры,в котором осуществляются вывод игры на дисплей,передвижение
 class Game
 {
 private:
@@ -415,7 +418,7 @@ void setup() {
 
    
   tft.fillScreen(BLACK);//Заполняет экран черным цветом
-
+ //прорисовка кнопок движения
   tft.fillRect(0, 0, BOXSIZE, BOXSIZE, RED);
   tft.fillRect(BOXSIZE, 0, BOXSIZE, BOXSIZE, YELLOW);
   tft.fillRect(BOXSIZE*2, 0, BOXSIZE, BOXSIZE, GREEN);
@@ -454,6 +457,7 @@ void loop() {
   pinMode(YP, OUTPUT);
     
     // scale from 0->1023 to tft.width
+    //поворот системы координат для работы с выводом и перемещением мячика
     p.x = tft.width()-(map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
     p.y = tft.height()-(map(p.y, TS_MINY, TS_MAXY, tft.height(), 0)); 
     p.x= p.x+p.y;
@@ -470,7 +474,7 @@ void loop() {
       // press the bottom of the screen to erase 
      
 
-   
+   //Заливка фона вокруг кнопок
       if(p.x<BOXSIZE)
       button='d';
       if(p.x>BOXSIZE && p.x<BOXSIZE*2)
