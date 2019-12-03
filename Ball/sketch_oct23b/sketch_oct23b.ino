@@ -450,12 +450,11 @@ void loop() {
   ball.Show();
  
   // put your main code here, to run repeatedly:
-  digitalWrite(13, HIGH);
-  TSPoint p = ts.getPoint();
-  digitalWrite(13, LOW);
-  pinMode(XM, OUTPUT);
-  pinMode(YP, OUTPUT);
-    
+    digitalWrite(13, HIGH);
+    digitalWrite(13, LOW);
+    pinMode(XM, OUTPUT);
+    pinMode(YP, OUTPUT);
+    TSPoint p = ts.getPoint();
     // scale from 0->1023 to tft.width
     //поворот системы координат для работы с выводом и перемещением мячика
     p.x = tft.width()-(map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
