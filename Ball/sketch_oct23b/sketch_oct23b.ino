@@ -13,9 +13,10 @@
 #define TS_MAXX 920
 #define TS_MAXY 940
 
+//Объект,отвечающий за прикосновения к экрану
+TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);    
 
-TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);    //Объект,отвечающий за прикосновения к экрану
-
+//цвета для вывода игры на экран
 #define  BLACK   0x0000
 #define RED     0xF800
 #define GREEN   0x07E0
@@ -24,12 +25,15 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);    //Объект,отвеч�
 #define WHITE   0xFFFF
 #define MAGENTA 0xF81F
 
+//Объект,отвечающий за работу с экраном
+SWTFT tft;    
 
-SWTFT tft;    //Объект,отвечающий за работу с экраном
-
+//размер кнопок движения 60 на 60
 #define BOXSIZE 60
 #define PENRADIUS 3
-struct Point      //Координаты точки
+
+//Координаты точки
+struct Point      
 {
 public:
   short x;
@@ -47,12 +51,12 @@ private:
   const int size;                   // максимальное количество элементов в стеке
   int top;                          // номер текущего элемента стека
 public:
-  Stack(int = 100);                  // по умолчанию размер стека равен 100 элементам
-  Stack(const Stack<T>&);          // конструктор копирования
+  Stack(int = 100);                 // по умолчанию размер стека равен 100 элементам
+  Stack(const Stack<T>&);           // конструктор копирования
   ~Stack();                         // деструктор
 
-  inline void push(const T&);     // поместить элемент в вершину стека
-  inline void pop();                   // удалить элемент из вершины стека и вернуть его
+  inline void push(const T&);       // поместить элемент в вершину стека
+  inline void pop();                // удалить элемент из вершины стека и вернуть его
   inline bool isEmpty();
   inline T& getTopLink();
 
@@ -109,6 +113,7 @@ inline void Stack<T>::pop()
   if(top > 0); // номер текущего элемента должен быть больше 0
   stackPtr[--top]; // удаляем элемент из стека
 }
+
 template<typename T>
 bool Stack<T>::isEmpty()
 {
@@ -136,7 +141,9 @@ struct Cell
   Cell()
   {
     x = y = 0;
+ //проверка,"посещали" ли мы элемент массива
     visited = false;
+ //Соседи рассматриваемой ячейки
     neightbours = 0b0000;
   }
 
@@ -153,6 +160,23 @@ struct Cell
   bool visited;
   int neightbours;
 };
+
+/*
+ * Мы используем сетку 15 (строки) на 13 (столбцы), заполненную 0 и 1
+   0 означает, что это свободная ячейка, и мы можем использовать ее по своему желанию
+   1 означает, что это стена, и мы не можем ее использовать
+   На самом деле мы работаем с сеткой 7x6 (мы удваиваем
+   и увеличить число на 1, чтобы получить окончательную сетку)
+   Мы используем алгоритм DFS, который работает просто:
+   1. Выберите начальную ячейку
+   2. Проверьте, можем ли мы посетить любую соседнюю камеру
+     Y => выбрать случайную соседку
+         положить его в стек
+         отметьте путь к соседству
+     N => ячейка посещена
+   3. Извлеките ячейку из стека, вернитесь к 2
+ */
+
 //Функция,которая генерирует лабиринт
 char** GenerateMaze(int startX, int startY, int rows, int cols)
 {
@@ -169,6 +193,9 @@ char** GenerateMaze(int startX, int startY, int rows, int cols)
   Stack<Cell>* callStack = new Stack<Cell>();
 
   grid[startX][startY].visited = true;
+  
+//Возьмем случайного соседа для начальной ячейки
+//и положим этого соседа в стек
 
   int neightbours = EMPTY;
   int randomNeightbour;
@@ -199,10 +226,10 @@ char** GenerateMaze(int startX, int startY, int rows, int cols)
 
   do
   {
-    Cell current = callStack->getTopLink();
+    Cell current = callStack->getTopLink();   //Изменяем
     neightbours = EMPTY;
-    // check if we have any neightbours
-
+    
+    // проверяем,есть ли у нас соседи
     for (int i = 0; i < 4; ++i)
     {
       int x = current.x + DX[i];
@@ -219,7 +246,7 @@ char** GenerateMaze(int startX, int startY, int rows, int cols)
       continue;
     }
 
-    // if we have any => choose one random => put it on a stack
+    // если есть,выбираем одного рандомного и кладем в стек
     do
     {
       randomNeightbour = rand() % 4;
@@ -232,10 +259,13 @@ char** GenerateMaze(int startX, int startY, int rows, int cols)
     grid[_x][_y].visited = true;
     callStack->push(grid[_x][_y]);
 
-  } while (!callStack->isEmpty());
+  } while (!callStack->isEmpty());    //Изменяем
 
   int _rows = rows * 2 + 1;
   int _cols = cols * 2 + 1;
+
+  //теперь у нас есть ссылки между ячейками, 
+  //и нам нужно преобразовать их в нашу обычную сетку, которую мы собираемся вернуть
   
   char** resultGrid = new char* [_rows];
   for (int i = 0; i < _rows; ++i)
@@ -261,7 +291,7 @@ char** GenerateMaze(int startX, int startY, int rows, int cols)
     }
   }
 
-  // free memory
+  // очищаем память
   for (int i = 0; i < rows; ++i)
     delete[] grid[i];
   delete[] grid;
@@ -285,8 +315,6 @@ public:
   Game();
   void Move(char);
   void Show();
-  
-  void FinishGame();
 };
 Game::Game()
 {
@@ -309,15 +337,13 @@ Game::Game()
 }
 void Game::Show()
 {
-  //Serial.println("Show"); 
+  //Рисуем лабиринт,мяч и финиш
   for (int i =0; i <rows; i++)
   {
-      for (int j = 0; j <cols; j++)
+      for (int j = 0; j <cols; j++) 
       {
       if (i == Ball_Coordinates.y && j == Ball_Coordinates.x)
       {
-        //Serial.println("ball");
-        //tft.fillRect((tft.width()-(17*(Ball_Coordinates.x+1))),(tft.height()-((17*(Ball_Coordinates.y+1)))),17,17,BLACK);
         tft.fillCircle((tft.width()-(17*(Ball_Coordinates.x+0.5))),(tft.height()-((17*(Ball_Coordinates.y+0.5)))),5,BLACK);       
       }
       else if(i==Finish.y && j==Finish.x)
@@ -330,6 +356,7 @@ void Game::Show()
        {       
         tft.fillRect(tft.width()-(j+1)*17,tft.height()-((i+1)*17),17,17,WHITE);
        }
+   //Проверяем,дошел ли мяч до финиша,и есои да,генерируем новый массив
        if(Ball_Coordinates.x==11 && Ball_Coordinates.y==13)
        {
         Ball_Coordinates.x = 1;
@@ -418,8 +445,9 @@ void setup(void) {
   uint16_t identifier = tft.readID();
   
   tft.begin(identifier);
+ //Заливаме экран черным
    tft.fillScreen(BLACK);
-   
+ //поворачиваем экран 
    tft.setRotation(2);
    tft.setCursor(30,140);
    tft.println("The Game 'The ball in the maze'");
@@ -432,11 +460,12 @@ void setup(void) {
    tft.println(level);
    delay(2000);
    tft.setCursor(0,0);
+ //поворачиваем обратно
    tft.setRotation(4);
-  
-  tft.fillScreen(BLACK);//Заполняет экран черным цветом
+  //Заполняем экран черным цветом
+  tft.fillScreen(BLACK);
 
-
+//заливаем место для кнопок цветами
   tft.fillRect(0, 0, BOXSIZE, BOXSIZE, RED);
   tft.fillRect(BOXSIZE, 0, BOXSIZE, BOXSIZE, YELLOW);
   tft.fillRect(BOXSIZE*2, 0, BOXSIZE, BOXSIZE, GREEN);
@@ -465,12 +494,13 @@ void loop() {
   ball.Show();
 
   digitalWrite(13, HIGH);
+  //Считываем нажатие на экран
   TSPoint p = ts.getPoint();
   digitalWrite(13, LOW);
   pinMode(XM, OUTPUT);
   pinMode(YP, OUTPUT);
     
-    // scale from 0->1023 to tft.width
+ //переводим координаты точки в удобную нам систему координат
     p.x = tft.width()-(map(p.x, TS_MINX, TS_MAXX, tft.width(), 0));
     p.y = tft.height()-(map(p.y, TS_MINY, TS_MAXY, tft.height(), 0)); 
     p.x= p.x+p.y;
@@ -478,6 +508,7 @@ void loop() {
     p.y=-p.y;
     p.x=p.x-p.y;
     p.x=tft.width()-p.x+BOXSIZE;
+  //проверяем,нажал ли пользователь в области кнопок 
     if(p.y<BOXSIZE )
     {
     char button;
