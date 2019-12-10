@@ -18,12 +18,15 @@ private:
 	Point Start;
 	Point Finish;
 	Point Ball_Coordinates;
+	char _direction;
 
 public:
 	Game();
 
-	void Move(char);
+	void Move();
 	void Show();
+	void ContinuousMove();
+	void SetDirection(char);
 	
 	void FinishGame();
 };

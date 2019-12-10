@@ -12,16 +12,29 @@ int main(int argc, const char* argv[])
 	std::cout << "level:1";
 	Sleep(3000);
 	system("cls");
-	char c;
+	char button;
+	
 	do
-	{		
-		a.Show();
-		
-		a.Move(_getch());
+	{
+		if (_kbhit()) {
+			button = _getch();
+			if (button == 'q')
+			{
+				a.FinishGame();
+				break;
+			}
 
-	
-	
+			a.SetDirection(button);
+		}		
+		
+		a.Move();
+		
+		a.Show();
+
+		Sleep(10);
+
 		system("cls");
+
 	} while (true);
 
 	return 0;
