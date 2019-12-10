@@ -311,11 +311,19 @@ private:
   Point Ball_Coordinates;
   Point Start;
   Point Finish;
+  char _direction;
 public:
   Game();
-  void Move(char);
+  void ContinuousMove();
+  void SetDirection(char);
+  void Move();
   void Show();
 };
+void Game::SetDirection(char d)
+{
+  _direction = d;
+}
+
 Game::Game()
 {
   //Serial.println("a");
@@ -411,10 +419,10 @@ void Game::Show()
 
 
   
-void Game::Move(char button)
+void Game::Move()
 {
 
-  switch (button)
+  switch (_direction)
   {
   case 'w':
     if (mas[Ball_Coordinates.y - 1][Ball_Coordinates.x] != 1 && Ball_Coordinates.y <=rows)
@@ -494,6 +502,8 @@ void loop() {
   ball.Show();
 
   digitalWrite(13, HIGH);
+  //if(_kbhit())
+  //{
   //Считываем нажатие на экран
   TSPoint p = ts.getPoint();
   digitalWrite(13, LOW);
@@ -527,9 +537,11 @@ void loop() {
       button='w';
       if(p.x>BOXSIZE*3 && p.x<BOXSIZE*4)
       button='a';
+      ball.SetDirection(button);
+    }
     }
   }
-     ball.Move(button);
-    }
-    
+  //}
+     ball.Move();
+ 
     }
